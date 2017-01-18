@@ -25,7 +25,8 @@ def rsa_encrypt(msg, pub_key_path):
     with open(pub_key_path, 'rb') as f:
         key = RSA.importKey(f.read())
     cipher = PKCS1_v1_5.new(key)
-    return cipher.encrypt(msg + h.digest())
+    cipher_text = cipher.encrypt(msg + h.digest())
+    return cipher_text
 
 
 def rsa_decrypt(msg, pri_key_path):
@@ -39,6 +40,16 @@ def rsa_decrypt(msg, pri_key_path):
     if digest == msg[-dsize:]:
         return msg[:-dsize]
     return msg
+
+
+def verify_sign(signature, pri_key_path):
+    try:
+        msg = rsa_decrypt(signature, pri_key_path)
+        return msg.decode('utf-8')
+    except Exception as e:
+        print(e)
+
+    return None
 
 
 def main():
